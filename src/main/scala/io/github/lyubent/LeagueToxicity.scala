@@ -1,7 +1,7 @@
 package io.github.lyubent
 
-import java.util.Properties
 
+import io.github.lyubent.util.FileUtil
 import org.apache.spark.sql.SparkSession
 
 
@@ -16,7 +16,7 @@ object LeagueToxicity {
 
     val baseDF =  spark.read
                        .format("json")
-                       .load(getDatasetPath()).cache()
+                       .load(FileUtil.getDatasetPath()).cache()
 
     // implicit import for usage of $
     import spark.implicits.StringToColumn
@@ -29,19 +29,5 @@ object LeagueToxicity {
                                                    .count()
                                                    .orderBy($"count".desc)
     println("Tier of all players for all games:\n" + tierSummary.show())
-  }
-
-  /**
-   * Uses classloader to access resource folder and Java config
-   * to retrieve the path to the static game dataset.
-   *
-   * @return Path to static json dataset
-   */
-  // TODO Function belongs in utility class, not in entry point.
-  private def getDatasetPath(): String = {
-    val p = new Properties()
-    p.load(getClass.getClassLoader.getResourceAsStream("toxicity.conf"))
-    println("dafq??? " + p.getProperty("matches1"))
-    p.getProperty("matches1")
   }
 }
