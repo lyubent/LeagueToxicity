@@ -1,6 +1,13 @@
 language: scala
+env:
+  # This splits the build into two parts
+  matrix:
+    - TEST_COMMAND="scripted sbt-assembly/*"
+    - TEST_COMMAND="scripted merging/* caching/*"
+script:
+   - sbt "$TEST_COMMAND"
 scala:
-  - 2.11.2
+  - 2.11.8
 jdk:
   - oraclejdk8
 sudo: false
