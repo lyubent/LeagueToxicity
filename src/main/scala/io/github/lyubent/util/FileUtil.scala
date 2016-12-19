@@ -12,8 +12,7 @@ object FileUtil {
    */
   def getConfigProperty(property: String): String = {
     val p = new Properties()
-    p.load(getClass.getClassLoader.getResourceAsStream("toxicity.conf"))
+    p.load(getClass.getClassLoader.getResourceAsStream("toxicity.properties"))
     p.getProperty(property)
   }
-
 }
