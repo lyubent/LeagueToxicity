@@ -1,57 +1,59 @@
 package io.github.lyubent
 
-import io.github.lyubent.util.FileUtil
+import io.github.lyubent.util.{FileUtil, LoggerUtil}
 
 import scalaj.http.{Http, HttpOptions}
 
 object LOLRequest {
 
   private var gameNotFoundCounter = 0
+  private val logger = LoggerUtil.getLogger("LOLRequest")
 
   /**
    * Generic get request function
    *
    * @param matchId ID of the game to be requested.
    */
-  // TODO parameterise function better. Add option for various / multiple URLS
-  // TODO requires logger. Not just sout.
   def sendGetRequest(matchId: Long): Unit = {
-
-    println(s"Processing game $matchId")
 
     val url = "https://euw.api.pvp.net/api/lol/euw/v2.2/match/" + matchId.toString
     val result = Http(url).param("api_key", FileUtil.getConfigProperty("api_key"))
                           .option(HttpOptions.readTimeout(2000)).asString
+    logger.info(s"Fetching $matchId status: ${result.statusLine}")
 
-    println(result.contentType)
-    println("code" + result.code)
-
-    if (result.code == 200) {
-      // save somewhere.
-      println("200 ")
-      println(result.body)
-    } else if (result.code == 404) {
-      gameNotFoundCounter += 1
-      println(s"404 Games not found so far: $gameNotFoundCounter")
-    } else if (result.code == 429) {
-      // sleep 10sec, we've ran out of requests.
-      println("429 Sleeping 10 sec, request limit reached.")
-      Thread.sleep(10000)
+    result.code match {
+      case 200 => {
+        // save somewhere.
+        // TODO save this to file
+        // result.body
+      }
+      case 404 => {
+        gameNotFoundCounter += 1
+        logger.warn(s"Games not found so far: $gameNotFoundCounter")
+      }
+      case 429 => {
+        // sleep 10sec, we've ran out of requests.
+        logger.warn("Sleeping 10 sec, request limit reached.")
+        // todo this needs to be an incremental time out
+        // every sequencial timeout = double this time out.
+        // if we dont hit a timeout 5 requests in a row reset it.
+        Thread.sleep(10000)
+      }
+      case _ => {
+        logger.warn(s"Unexpected get reply ${result.headers}")
+      }
     }
-    println(result.statusLine)
   }
 
-  // generic main for loopin and building a dataset.
+  // Generic main for loopin and building a dataset.
   // Can be much fancier (Spark streaming) but will be kept basic for the time being.
   def main(args: Array[String]): Unit = {
-    // we know that 2962507849 exists, start from 1 up.
-    // should be dynamic instead of hardcoded.
-    var startingMID = 2962507850L
+    var startingMatchID = FileUtil.getConfigProperty("startingMatchID").toLong
     while(true) {
-      LOLRequest.sendGetRequest(startingMID)
-      // API doesn't allow us to go faster than this.
+      LOLRequest.sendGetRequest(startingMatchID)
+      // API doesn't allow us to go faster than 1 sec per request.
       Thread.sleep(1000)
-      startingMID += 1
+      startingMatchID += 1
     }
   }
 }
