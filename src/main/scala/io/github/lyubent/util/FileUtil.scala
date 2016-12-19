@@ -2,9 +2,6 @@ package io.github.lyubent.util
 
 import java.util.Properties
 
-/**
- * Created by core on 18/12/2016.
- */
 object FileUtil {
 
   /**
@@ -13,10 +10,10 @@ object FileUtil {
    *
    * @return Path to static json dataset
    */
-  def getDatasetPath(): String = {
+  def getConfigProperty(property: String): String = {
     val p = new Properties()
     p.load(getClass.getClassLoader.getResourceAsStream("toxicity.conf"))
-    p.getProperty("matches1")
+    p.getProperty(property)
   }
 
 }

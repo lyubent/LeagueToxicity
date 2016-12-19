@@ -16,7 +16,7 @@ object LeagueToxicity {
 
     val baseDF =  spark.read
                        .format("json")
-                       .load(FileUtil.getDatasetPath()).cache()
+                       .load(FileUtil.getConfigProperty("matches1")).cache()
 
     // implicit import for usage of $
     import spark.implicits.StringToColumn
@@ -57,6 +57,6 @@ object LeagueToxicity {
                   $"participants".getItem(3).getField("stats").getField("assists").as("assists"),
                   $"participants".getItem(3).getField("stats").getField("deaths").as("deaths"))
           .orderBy($"gold".desc)
-          .show
+          .show()
   }
 }
