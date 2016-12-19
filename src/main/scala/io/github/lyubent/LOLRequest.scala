@@ -13,7 +13,9 @@ object LOLRequest {
    * Generic get request function
    *
    * @param matchId ID of the game to be requested.
+   * @return Int representing status of get request.
    */
+  // todo Protect from socket timeout exceptions
   def sendGetRequest(matchId: Long): Int = {
 
     val url = "https://euw.api.pvp.net/api/lol/euw/v2.2/match/" + matchId.toString
@@ -52,10 +54,13 @@ object LOLRequest {
   def main(args: Array[String]): Unit = {
     var startingMatchID = FileUtil.getConfigProperty("startingMatchID").toLong
     while(true) {
-      LOLRequest.sendGetRequest(startingMatchID)
+      val status = LOLRequest.sendGetRequest(startingMatchID)
       // API doesn't allow us to go faster than 1 sec per request.
       Thread.sleep(1000)
-      startingMatchID += 1
+
+      // if we time out, we will retry with the same MID.
+      if (status != 429)
+        startingMatchID += 1
     }
   }
 }
