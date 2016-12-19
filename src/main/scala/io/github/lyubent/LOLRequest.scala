@@ -14,7 +14,7 @@ object LOLRequest {
    *
    * @param matchId ID of the game to be requested.
    */
-  def sendGetRequest(matchId: Long): Unit = {
+  def sendGetRequest(matchId: Long): Int = {
 
     val url = "https://euw.api.pvp.net/api/lol/euw/v2.2/match/" + matchId.toString
     val result = Http(url).param("api_key", FileUtil.getConfigProperty("api_key"))
@@ -43,6 +43,8 @@ object LOLRequest {
         logger.warn(s"Unexpected get reply ${result.headers}")
       }
     }
+
+    result.code
   }
 
   // Generic main for loopin and building a dataset.
