@@ -1,5 +1,7 @@
 # LeagueToxicity
 
+[![Build Status](https://travis-ci.org/lyubent/LeagueToxicity.svg?branch=master)](https://travis-ci.org/lyubent/LeagueToxicity)
+
 #### A small Spark project based around the League of Legends API. This is just for fun and to see some of the latest and greatest features of Spark 2.
 
 
