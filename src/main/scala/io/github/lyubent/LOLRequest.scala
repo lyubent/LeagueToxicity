@@ -28,6 +28,7 @@ object LOLRequest {
         // save somewhere.
         // TODO save this to file
         // result.body
+        FileUtil.appendToFile(result.body)
       }
       case 404 => {
         gameNotFoundCounter += 1

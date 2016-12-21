@@ -2,8 +2,9 @@ package io.github.lyubent
 
 import io.github.lyubent.util.FileUtil
 import org.junit.{Assert, Test}
+import org.scalatest.junit.JUnitSuite
 
-class LOLRequestTest {
+class LOLRequestTest extends JUnitSuite {
 
   // mimic java static import by explicitly importing all funcs.
   import Assert._
