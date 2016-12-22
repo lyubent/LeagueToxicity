@@ -1,6 +1,6 @@
 language: scala
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION assembly
+  - sbt ++$TRAVIS_SCALA_VERSION "set test in assembly := {}" clean assembly
 scala:
   - 2.11.8
 jdk:

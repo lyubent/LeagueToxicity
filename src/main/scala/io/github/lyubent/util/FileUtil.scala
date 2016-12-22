@@ -22,9 +22,10 @@ object FileUtil {
    * Appends content to file, checks if exists, if not creates it.
    *
    * @param body Content to be appended to file.
+   * @param path String path to the file to save to.
    */
-  def appendToFile(body: String): Unit = {
-    val filePath = getConfigProperty("toxicity.api_output")
+  def appendToFile(body: String, path: String): Unit = {
+    val filePath = path
     if (!File(filePath).exists)
       Path(filePath).createFile()
     File(filePath).appendAll(body)

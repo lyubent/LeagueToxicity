@@ -25,10 +25,7 @@ object LOLRequest {
 
     result.code match {
       case 200 => {
-        // save somewhere.
-        // TODO save this to file
-        // result.body
-        FileUtil.appendToFile(result.body)
+        FileUtil.appendToFile(result.body + "\n", FileUtil.getConfigProperty("api_output"))
       }
       case 404 => {
         gameNotFoundCounter += 1
