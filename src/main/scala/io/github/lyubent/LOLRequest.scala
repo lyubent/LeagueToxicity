@@ -1,8 +1,9 @@
 package io.github.lyubent
 
+import java.net.SocketTimeoutException
 import io.github.lyubent.util.{FileUtil, LoggerUtil}
 
-import scalaj.http.{Http, HttpOptions}
+import scalaj.http.{Http, HttpOptions, HttpResponse}
 
 object LOLRequest {
 
@@ -15,14 +16,31 @@ object LOLRequest {
    * @param matchId ID of the game to be requested.
    * @return Int representing status of get request.
    */
-  // todo Protect from socket timeout exceptions
   def sendGetRequest(matchId: Long): Int = {
 
     val url = "https://euw.api.pvp.net/api/lol/euw/v2.2/match/" + matchId.toString
-    val result = Http(url).param("api_key", FileUtil.getConfigProperty("api_key"))
-                          .option(HttpOptions.readTimeout(2000)).asString
-    logger.info(s"Fetching $matchId status: ${result.statusLine}")
 
+    try {
+      val result = Http(url).param("api_key", FileUtil.getConfigProperty("api_key"))
+                            .option(HttpOptions.readTimeout(2000)).asString
+      logger.info(s"Fetching $matchId status: ${result.statusLine}")
+      handleGetRequest(result)
+    } catch {
+      // TODO Possibly propagate error.
+      case ste: SocketTimeoutException => {
+        logger.error("SocketTimeoutException - API Reply was too slow", ste)
+        -1
+      }
+    }
+  }
+
+  /**
+   * Processes result of the get request. Saves too file if successful request.
+   *
+   * @param result HttpResponse[String] Reply of the get request.
+   * @return Int representing status of get request.
+   */
+  def handleGetRequest(result: HttpResponse[String]): Int = {
     result.code match {
       case 200 => {
         FileUtil.appendToFile(result.body + "\n", FileUtil.getConfigProperty("api_output"))

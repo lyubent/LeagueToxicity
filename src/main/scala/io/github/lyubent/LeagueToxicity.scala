@@ -1,6 +1,5 @@
 package io.github.lyubent
 
-
 import io.github.lyubent.util.FileUtil
 import org.apache.spark.sql.SparkSession
 
