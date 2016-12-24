@@ -11,22 +11,21 @@ class LOLRequestTest extends JUnitSuite {
 
   @Test
   def testStartingMatchID(): Unit = {
-    val startingMID = 2962521447L
-    assertEquals(startingMID, FileUtil.getConfigProperty("startingMatchID").toLong)
+    assertEquals(2962521447L, FileUtil.getConfigProperty("startingMatchID").toLong)
     Thread.sleep(2000)
   }
 
   // test that a match gives 404
   @Test
   def test404ByMID(): Unit = {
-    assertEquals(LOLRequest.sendGetRequest(-1L), 404)
+    assertEquals(404, LOLRequest.sendGetRequest(-1L))
     Thread.sleep(2000)
   }
 
   // test that a match gets 200
   @Test
   def test200ByMID(): Unit = {
-    assertEquals(LOLRequest.sendGetRequest(2962507850L), 200)
+    assertEquals(200, LOLRequest.sendGetRequest(2962507850L))
     Thread.sleep(2000)
   }
 }
