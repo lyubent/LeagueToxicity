@@ -10,8 +10,8 @@ class LOLRequestTest extends JUnitSuite {
   import Assert._
 
   @Test
-  def teststartingMatchID(): Unit = {
-    val startingMID = 2962507850L
+  def testStartingMatchID(): Unit = {
+    val startingMID = 2962521447L
     assertEquals(startingMID, FileUtil.getConfigProperty("startingMatchID").toLong)
     Thread.sleep(2000)
   }
