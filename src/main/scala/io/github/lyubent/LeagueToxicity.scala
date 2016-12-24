@@ -8,7 +8,6 @@ object LeagueToxicity {
 
     val spark = SparkSession.builder()
                             .appName("Toxic_League")
-                            .enableHiveSupport()
                             .getOrCreate()
 
     // run static query analytics
