@@ -11,9 +11,16 @@ class DynamicMatchQuery(spark: SparkSession) {
   import spark.implicits.StringToColumn
 
   def runBatch(): Unit = {
+    val baseDF = getBaseDF()
+    rankedFlex(baseDF)
+    rankedSoloQ(baseDF)
+  }
+
+  def getBaseDF(): DataFrame = {
     val baseDF =  spark.read
                        .format("json")
                        .load(FileUtil.getConfigProperty("matches_dynamic")).cache()
+    baseDF
   }
 
   def displayQueueTypes(baseDF: DataFrame): Unit = {
